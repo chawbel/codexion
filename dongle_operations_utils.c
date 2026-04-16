@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <pthread.h>
 
 void	insert_request(t_sim *sim, t_dongle *dongle, t_coder *coder)
 {
@@ -19,7 +18,11 @@ void	insert_request(t_sim *sim, t_dongle *dongle, t_coder *coder)
 
 	node.coder_id = coder->id;
 	if (sim->scheduler == EDF)
+	{
+		pthread_mutex_lock(&sim->stop_mutex);
 		node.priority = coder->last_compile_start + sim->time_to_burnout;
+		pthread_mutex_unlock(&sim->stop_mutex);
+	}
 	else
 		node.priority = get_time_ms();
 	heap_insert(dongle->waitqueue, node);
@@ -40,9 +43,9 @@ void	wait_for_turn(t_sim *sim, t_dongle *dongle, t_coder *coder)
 
 	while (1)
 	{
-		if (sim->sim_ended)
+		if (sim_ended(sim))
 			return ;
-		if (!sim->sim_ended && can_take_dongle(dongle, coder))
+		if (!sim_ended(sim) && can_take_dongle(dongle, coder))
 			return ;
 		if (!dongle->available
 			|| dongle->waitqueue->nodes[0].coder_id != coder->id)
@@ -60,7 +63,7 @@ void	wait_for_turn(t_sim *sim, t_dongle *dongle, t_coder *coder)
 
 void	acquire_if_possible(t_sim *sim, t_dongle *dongle, t_coder *coder)
 {
-	if (!sim->sim_ended && can_take_dongle(dongle, coder))
+	if (!sim_ended(sim) && can_take_dongle(dongle, coder))
 	{
 		heap_extract(dongle->waitqueue);
 		dongle->available = 0;

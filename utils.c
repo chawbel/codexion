@@ -1,110 +1,78 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cbahry <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/03 02:00:31 by cbahry            #+#    #+#             */
-/*   Updated: 2026/04/03 02:00:31 by cbahry           ###   ########.fr       */
+/*   Created: 2026/04/03 02:38:55 by cbahry            #+#    #+#             */
+/*   Updated: 2026/04/03 02:38:55 by cbahry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+void	ft_to_lower(char *str)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
-	if (size > 0)
+	while (str[i])
 	{
-		while ((i < size - 1) && (src[i] != '\0'))
-		{
-			dst[i] = src[i];
-			i++;
-		}
-		dst[i] = '\0';
-	}
-	while (src[i] != '\0')
-		i++;
-	return (i);
-}
-
-size_t	ft_count_words(char const *s, char c)
-{
-	size_t	count;
-	int		in_word;
-
-	count = 0;
-	in_word = 0;
-	while (*s)
-	{
-		if (*s != c && in_word == 0)
-		{
-			in_word = 1;
-			count++;
-		}
-		else if (*s == c)
-			in_word = 0;
-		s++;
-	}
-	return (count);
-}
-
-static void	ft_free(char **s, size_t count)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < count)
-	{
-		free(s[i]);
+		if (str[i] >= 'A' && str[i] <= 'Z')
+			str[i] = str[i] + 32;
 		i++;
 	}
-	free(s);
 }
 
-static char	*ft_allocate_word(char const *s, char c)
+int	print_error(char *error_msg)
 {
-	char	*word;
-	size_t	len;
-
-	len = 0;
-	while (s[len] && s[len] != c)
-		len++;
-	word = malloc(len + 1);
-	if (!word)
-		return (NULL);
-	ft_strlcpy(word, s, len + 1);
-	return (word);
+	fprintf(stderr, "%s\n", error_msg);
+	exit(1);
 }
 
-char	**ft_split(char const *s, char c)
+int	is_number(const char *str)
 {
-	char	**result;
+	if (!str || !*str)
+		return (0);
+	if (*str == '-' || *str == '+')
+		str++;
+	if (!*str)
+		return (0);
+	while (*str)
+	{
+		if (*str < 48 || *str > 57)
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+char	*ft_strdup(const char *s)
+{
 	size_t	i;
+	char	*dup;
+	size_t	size;
 
-	result = malloc((ft_count_words(s, c) + 1) * 8);
-	if (!result)
+	size = strlen(s);
+	dup = malloc((size + 1) * sizeof(char));
+	if (dup == NULL)
 		return (NULL);
 	i = 0;
-	while (*s)
+	while (s[i] != '\0')
 	{
-		while (*s == c)
-			s++;
-		if (!*s)
-			break ;
-		result[i] = ft_allocate_word(s, c);
-		if (!result[i])
-		{
-			ft_free(result, i);
-			return (NULL);
-		}
-		while (*s != c && *s)
-			s++;
+		dup[i] = s[i];
 		i++;
 	}
-	result[i] = NULL;
-	return (result);
+	dup[i] = '\0';
+	return (dup);
+}
+
+void	swap(t_heap_node *node_1, t_heap_node *node_2)
+{
+	t_heap_node	temp;
+
+	temp = *node_1;
+	*node_1 = *node_2;
+	*node_2 = temp;
 }

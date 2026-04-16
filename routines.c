@@ -38,6 +38,14 @@ int	number_of_compiles_reached(t_sim *sim)
 
 void	take_dongles(t_coder *coder)
 {
+	if (coder->sim->number_of_coders == 1)
+	{
+		take_dongle(coder->sim, coder->left, coder);
+		log_state(coder->sim, coder->id, "has taken a dongle");
+		while (!sim_ended(coder->sim))
+			ft_usleep(1000, coder);
+		return ;
+	}
 	if (coder->left->id < coder->right->id)
 	{
 		take_dongle(coder->sim, coder->left, coder);

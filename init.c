@@ -6,7 +6,7 @@
 /*   By: cbahry <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 23:30:14 by cbahry            #+#    #+#             */
-/*   Updated: 2026/04/04 23:30:14 by cbahry           ###   ########.fr       */
+/*   Updated: 2026/04/15 22:25:33 by cbahry           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	init_sim(t_sim *sim)
 	sim->start_time = 0;
 	sim->dongles = NULL;
 	sim->coders = NULL;
+	pthread_mutex_init(&sim->monitor_sleep_lock, NULL);
+	pthread_cond_init(&sim->monitor_sleep_cond, NULL);
 }
 
 void	init_coder(t_coder *coder, t_sim *sim, int id)
@@ -38,6 +40,8 @@ void	init_coder(t_coder *coder, t_sim *sim, int id)
 	coder->last_compile_start = 0;
 	coder->compile_count = 0;
 	coder->sim = sim;
+	pthread_mutex_init(&coder->sleep_lock, NULL);
+	pthread_cond_init(&coder->sleep_cond, NULL);
 }
 
 void	init_dongle(t_dongle *dongle, t_sim *sim, int id)
@@ -49,7 +53,7 @@ void	init_dongle(t_dongle *dongle, t_sim *sim, int id)
 	pthread_cond_init(&dongle->cond, NULL);
 	dongle->waitqueue = malloc(sizeof(t_heap));
 	if (!dongle->waitqueue)
-			print_error("malloc failed");
+		print_error("malloc failed");
 	heap_init(dongle->waitqueue, sim);
 }
 

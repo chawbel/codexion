@@ -44,14 +44,14 @@ void	validate_sim(t_sim *sim)
 {
 	if (sim->number_of_coders < 1)
 		print_error("number_of_coders must be >= 1");
-	if (sim->time_to_burnout < 1)
-		print_error("time_to_burnout must be >= 1");
-	if (sim->time_to_compile < 1)
-		print_error("time_to_compile must be >= 1");
-	if (sim->time_to_debug < 1)
-		print_error("time_to_debug must be >= 1");
-	if (sim->time_to_refactor < 1)
-		print_error("time_to_refactor must be >= 1");
+	if (sim->time_to_burnout < 0)
+		print_error("time_to_burnout must be >= 0");
+	if (sim->time_to_compile < 0)
+		print_error("time_to_compile must be >= 0");
+	if (sim->time_to_debug < 0)
+		print_error("time_to_debug must be >= 0");
+	if (sim->time_to_refactor < 0)
+		print_error("time_to_refactor must be >= 0");
 	if (sim->number_of_compiles_required < 1)
 		print_error("number_of_compiles_required must be >= 1");
 	if (sim->dongle_cooldown < 0)

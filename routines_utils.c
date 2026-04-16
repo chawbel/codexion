@@ -21,14 +21,14 @@ void	log_and_sleep(t_coder *coder)
 	if (sim_ended(coder->sim))
 		return ;
 	log_state(coder->sim, coder->id, "is compiling");
-	usleep(coder->sim->time_to_compile * 1000);
+	ft_usleep(coder->sim->time_to_compile * 1000, coder);
 	release_dongles(coder);
 	if (sim_ended(coder->sim))
 		return ;
 	log_state(coder->sim, coder->id, "is debugging");
-	usleep(coder->sim->time_to_debug * 1000);
+	ft_usleep(coder->sim->time_to_debug * 1000, coder);
 	if (sim_ended(coder->sim))
 		return ;
 	log_state(coder->sim, coder->id, "is refactoring");
-	usleep(coder->sim->time_to_refactor * 1000);
+	ft_usleep(coder->sim->time_to_refactor * 1000, coder);
 }
